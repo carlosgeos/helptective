@@ -2,8 +2,46 @@
 
 from ChuckData import *
 
-def main():
+SPENT = STORE_NAME = HOURS = 0
+TIME = CATALOG = MINUTES  = 1
+
+routes = []
+
+
+def guess_routes(store=0):
+    print(calc_time([17, 40], [16, 40]))
+    if check_purchases(store):
+
+
+def calc_time(time1, time2):
+    """
+    Keyword Arguments:
+    time -- tuple containing a time
+
+    Returns an integer (minutes difference)
+
+    """
+
+    hours = time2[HOURS] - time1[HOURS]
+    minutes = (time2[MINUTES] - time1[MINUTES])
+    if minutes < 0:
+        hours -= 1
+    minutes %= 60
+    minutes += hours * 60
+
+    return minutes
+
+
+def check_purchases():
     print(catalogList)
+
+
+def print_results():
+    pass
+
+
+def main():
+    guess_routes()
 
 
 
