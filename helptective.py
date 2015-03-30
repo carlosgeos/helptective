@@ -8,32 +8,29 @@ ERROR_MARGIN = 0.001
 
 routes = []
 test = []
+solution = 1
 
-def guess_routes(store=0):
-    print("the time to go from one shop to another is:",
-          calc_time(purchasesList[store][TIME],
-                    purchasesList[store + 1][TIME]))
-    print(valid_purchase(12.58, 1))
-    print(generate_purchases_combis(3, 0))
-    for elem in test:
-        print(elem)
-    return 0
+def guess_routes(ticket=0):
+    global solution
+    tickets = len(purchasesList)
+    stores = len(catalogList)
+    print("ticket is", ticket)
+    if ticket == tickets:
+        print_results(solution, routes)
+    else:
+        paid_price = purchasesList[ticket][SPENT]
+        print(paid_price)
+        for store in range(stores):
+            print("3 veces")
+            print(store)
+            if valid_purchase(paid_price, store)\
+               and (valid_time(ticket, store)):
+                print("went in")
+                generate_purchases_combis(paid_price, store)
+                routes.append((catalogList[store][STORE_NAME],
+                               test))
+        guess_routes(ticket + 1)
 
-
-def calc_time(time1, time2):
-    """
-    Returns an integer (minutes difference)
-
-    """
-
-    hours = time2[HOURS] - time1[HOURS]
-    minutes = (time2[MINUTES] - time1[MINUTES])
-    if minutes < 0:
-        hours -= 1
-    minutes %= 60
-    minutes += hours * 60
-
-    return minutes
 
 
 def valid_purchase(paid_price, store):
@@ -89,15 +86,47 @@ def generate_purchases_combis(paid_price, store, possible_purchases=None):
     return False                # Arreglar lo de los returns y las variables
 
 
-def valid_time(minutes, store):
-    if minutes in storeDistance[store]:
+def calc_time(time1, time2):
+    """
+    Returns an integer (minutes difference)
+
+    """
+
+    hours = time2[HOURS] - time1[HOURS]
+    minutes = (time2[MINUTES] - time1[MINUTES])
+    if minutes < 0:
+        hours -= 1
+    minutes %= 60
+    minutes += hours * 60
+    print(minutes)
+
+    return minutes
+
+
+def valid_time(ticket, store):
+    if ticket == 0:
         return True
     else:
-        return False
+        on_the_road = calc_time(purchasesList[ticket - 1][TIME],
+                                purchasesList[ticket][TIME])
+        print(storesDistance[store])
+        if on_the_road in storesDistance[store]:
+            print("ASDFASDFASDFASD")
+            return True
+        else:
+            return False
 
 
-def print_results():
-    pass
+def print_results(solution, routes):
+    print("Solution number", solution)
+    print("------------------------------ #")
+    for elem in routes:
+        for elem2 in elem:
+            if elem.index(elem2) == 1:
+                for elem3 in elem2:
+                    print(elem3)
+    print()
+    print()
 
 
 def split(purchases, start, end):
@@ -128,7 +157,6 @@ def sort_purchaseList(purchases, start, end):
 def main():
     sort_purchaseList(purchasesList, 0, len(purchasesList) - 1)
     guess_routes()
-
 
 if __name__ == '__main__':
     main()
