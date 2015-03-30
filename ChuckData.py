@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # money and time of purchase
-purchasesList = [[13, [12, 20]],
-                 [28.79, [12, 13]]]
+purchasesList = [[28.79, [12, 13]],
+                 [13, [12, 20]]]
 
 # time to go from store to store
 # must be in minutes
