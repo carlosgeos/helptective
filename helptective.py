@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ChuckData import *
+from ChuckData2 import *
 
 SPENT = STORE_NAME = HOURS = 0
 TIME = CATALOG = MINUTES = 1
@@ -14,28 +14,47 @@ test2 = []
 #    return routes
 
 
-def guess_routes(ticket=0, store=0, coming_from=None, routes=[]):
-    print("This function")
+def guess_routes(ticket=0, store=0, coming_from=None, routes=None):
+    print()
+    print("------------------------------")
+    print("Ticket is:", ticket)
+    print("Store is:", store)
     tickets = len(purchasesList)
     stores = len(catalogList)
-    if ticket == tickets:
+    if routes is None:
+        routes = []
+    if len(routes) == tickets:
+        print("ROUTES LEN = tickets!!!")
+        print("Since routes is:", routes)
         if routes not in test2:
-            test2.append(routes)
-            print("test2 becomes:", test2)
-    elif 0 <= ticket < tickets and 0 <= store < stores:
+            test2.append(list(routes))
+            print("test2 BECOMES:", test2)
+            routes = []
+
+    if 0 <= ticket < tickets and 0 <= store < stores:
         paid_price = purchasesList[ticket][SPENT]
+
         if valid_purchase(paid_price, store)\
            and (valid_time(ticket, coming_from)):
             routes.append(store)
-            print("Routes become:", routes)
+            print("Routes ------>", routes)
             if ticket == 0:
                 coming_from = None
             else:
                 coming_from = store
+            print("The store WAS valid")
+            print("Recursive call store + 1")
             guess_routes(ticket + 1, store + 1, coming_from, routes)
+            print("Recursive call store - 1")
             guess_routes(ticket + 1, store - 1, coming_from, routes)
-        guess_routes(ticket, store + 1)
+        else:
+            print("The store WAS NOT valid!")
+            guess_routes(ticket, store + 1)
+    else:
+        print("INVALID TICKET OR STORE")
 
+    print("------------------------------")
+    print()
 
 
 def valid_purchase(paid_price, store):
@@ -121,9 +140,10 @@ def valid_time(ticket, store):
 
 def print_results():
     for i in range(len(test2)):
+        print()
         print("Solution number", i)
         print("------------------------------ #")
-        print(test2)
+        print(test2[i])
         print()
 
 
