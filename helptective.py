@@ -6,30 +6,35 @@ SPENT = STORE_NAME = HOURS = 0
 TIME = CATALOG = MINUTES = 1
 ERROR_MARGIN = 0.001
 
-routes = []
 test = []
-solution = 1
+test2 = []
 
-def guess_routes(ticket=0):
-    global solution
+#def init_possible_routes():
+#    routes = [[False for elem in row] for row in storesDistance]
+#    return routes
+
+
+def guess_routes(ticket=0, store=0, coming_from=None, routes=[]):
+    print("This function")
     tickets = len(purchasesList)
     stores = len(catalogList)
-    print("ticket is", ticket)
     if ticket == tickets:
-        print_results(solution, routes)
-    else:
+        if routes not in test2:
+            test2.append(routes)
+            print("test2 becomes:", test2)
+    elif 0 <= ticket < tickets and 0 <= store < stores:
         paid_price = purchasesList[ticket][SPENT]
-        print(paid_price)
-        for store in range(stores):
-            print("3 veces")
-            print(store)
-            if valid_purchase(paid_price, store)\
-               and (valid_time(ticket, store)):
-                print("went in")
-                generate_purchases_combis(paid_price, store)
-                routes.append((catalogList[store][STORE_NAME],
-                               test))
-        guess_routes(ticket + 1)
+        if valid_purchase(paid_price, store)\
+           and (valid_time(ticket, coming_from)):
+            routes.append(store)
+            print("Routes become:", routes)
+            if ticket == 0:
+                coming_from = None
+            else:
+                coming_from = store
+            guess_routes(ticket + 1, store + 1, coming_from, routes)
+            guess_routes(ticket + 1, store - 1, coming_from, routes)
+        guess_routes(ticket, store + 1)
 
 
 
@@ -98,35 +103,28 @@ def calc_time(time1, time2):
         hours -= 1
     minutes %= 60
     minutes += hours * 60
-    print(minutes)
 
     return minutes
 
 
 def valid_time(ticket, store):
-    if ticket == 0:
+    if ticket == 0 or store is None:
         return True
     else:
         on_the_road = calc_time(purchasesList[ticket - 1][TIME],
                                 purchasesList[ticket][TIME])
-        print(storesDistance[store])
         if on_the_road in storesDistance[store]:
-            print("ASDFASDFASDFASD")
             return True
         else:
             return False
 
 
-def print_results(solution, routes):
-    print("Solution number", solution)
-    print("------------------------------ #")
-    for elem in routes:
-        for elem2 in elem:
-            if elem.index(elem2) == 1:
-                for elem3 in elem2:
-                    print(elem3)
-    print()
-    print()
+def print_results():
+    for i in range(len(test2)):
+        print("Solution number", i)
+        print("------------------------------ #")
+        print(test2)
+        print()
 
 
 def split(purchases, start, end):
@@ -157,6 +155,7 @@ def sort_purchaseList(purchases, start, end):
 def main():
     sort_purchaseList(purchasesList, 0, len(purchasesList) - 1)
     guess_routes()
+    print_results()
 
 if __name__ == '__main__':
     main()
