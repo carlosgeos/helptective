@@ -8,54 +8,53 @@ ERROR_MARGIN = 0.001
 
 test = []
 test2 = []
-
+routes = []
 #def init_possible_routes():
 #    routes = [[False for elem in row] for row in storesDistance]
 #    return routes
 
 
-def guess_routes(ticket=0, store=0, coming_from=None, routes=None):
+def guess_routes(ticket=0, store=0, coming_from=None, to_visit=None):
+    global routes
     print()
-    print("------------------------------")
     print("Ticket is:", ticket)
     print("Store is:", store)
     tickets = len(purchasesList)
     stores = len(catalogList)
-    if routes is None:
+
+    if len(routes) == stores:
+        print("LEN ROUTES == STORES!!")
+        print("Since ROUTES IS:", routes)
+        test2.append(routes)
         routes = []
-    if len(routes) == tickets:
-        print("ROUTES LEN = tickets!!!")
-        print("Since routes is:", routes)
-        if routes not in test2:
-            test2.append(list(routes))
-            print("test2 BECOMES:", test2)
-            routes = []
-
-    if 0 <= ticket < tickets and 0 <= store < stores:
-        paid_price = purchasesList[ticket][SPENT]
-
-        if valid_purchase(paid_price, store)\
-           and (valid_time(ticket, coming_from)):
-            routes.append(store)
-            print("Routes ------>", routes)
-            if ticket == 0:
-                coming_from = None
-            else:
-                coming_from = store
-            print("The store WAS valid")
-            print("Recursive call store + 1")
-            guess_routes(ticket + 1, store + 1, coming_from, routes)
-            print("Recursive call store - 1")
-            guess_routes(ticket + 1, store - 1, coming_from, routes)
-        else:
-            print("The store WAS NOT valid!")
-            guess_routes(ticket, store + 1)
+        #    if to_visit is None:
     else:
-        print("INVALID TICKET OR STORE")
+        if 0 <= ticket < tickets and 0 <= store < stores:
+            print("WITHIN range ticket or store")
+            paid_price = purchasesList[ticket][SPENT]
 
-    print("------------------------------")
-    print()
-
+            if valid_purchase(paid_price, store)\
+               and (valid_time(ticket, coming_from)):
+                routes.append(store)
+                print("Routes ------>", routes)
+                if ticket == 0:
+                    coming_from = None
+                else:
+                    coming_from = store
+                    print("The store WAS valid")
+                to_visit = [index for index in range(stores)]
+                to_visit.remove(store)
+                for check in to_visit:
+                    guess_routes(ticket + 1, check, coming_from)
+#                print("He terminado, vamos a por otra store con el mismo ticket")
+            else:
+                print("The store WAS NOT valid!")
+                to_visit = [index for index in range(stores)]
+                to_visit.remove(store)
+                for check in to_visit:
+                    guess_routes(ticket, check, None, to_visit)
+        else:
+            print("OUT range ticket or store")
 
 def valid_purchase(paid_price, store):
     """asdf
